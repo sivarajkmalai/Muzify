@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Muzify</string>
+    <string name="home">Home</string>
+    <string name="library">Library</string>
+    <string name="profile">Profile</string>
+    <string name="recently_played">Recently Played</string>
+    <string name="downloaded_songs">Downloaded Songs</string>
+    <string name="liked_songs">Liked Songs</string>
+    <string name="playlists">Playlists</string>
+    <string name="create_playlist">Create Playlist</string>
+    <string name="add_to_playlist">Add to Playlist</string>
+    <string name="songs">Songs</string>
+    <string name="song">Song</string>
+    <string name="playlist_deleted">Playlist deleted</string>
+    <string name="undo">Undo</string>
+    <string name="rescan_media">Rescan Media</string>
+    <string name="choose_music_folders">Choose Music Folder</string>
+    <string name="current_folder">Current folder: %1$s</string>
+    <string name="folder_not_selected">No folder selected</string>
+    <string name="app_theme">App Theme</string>
+    <string name="total_songs">Total Songs</string>
+    <string name="liked_songs_count">Liked Songs</string>
+    <string name="playlists_created">Playlists Created</string>
+    <string name="no_songs_found">No songs found</string>
+    <string name="no_playlists">No playlists yet</string>
+    <string name="no_liked_songs">No liked songs yet</string>
+    <string name="enter_playlist_name">Enter playlist name</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="delete">Delete</string>
+    <string name="remove">Remove</string>
+    <string name="sort">Sort</string>
+    <string name="view_toggle">View Toggle</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="skip_forward">Skip Forward 10s</string>
+    <string name="skip_backward">Skip Backward 10s</string>
+    <string name="loop_mode">Loop Mode</string>
+    <string name="like">Like</string>
+    <string name="unlike">Unlike</string>
+    <string name="scanning_media">Scanning media files…</string>
+    <string name="scan_complete">Scan complete</string>
+    <string name="scan_library_title">Local Library</string>
+    <string name="scan_library_hint">Choose your music folder in Profile, then tap scan.</string>
+    <string name="scanning_library">Scanning your library…</string>
+    <string name="scan_result">Found %1$d songs</string>
+    <string name="select_music_folder_instruction">Move all your songs into a single folder, then choose it so Muzify only scans that location.</string>
+    <string name="clear_folder">Clear Folder</string>
+</resources>
+
+
