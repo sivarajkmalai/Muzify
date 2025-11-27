@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -22,7 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,9 +57,20 @@ class MusicService : MediaSessionService() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "onCreate: Service created")
         createNotificationChannel()
+        
+        // Immediate foreground promotion to prevent system kill
+        try {
+            val notification = buildNotification(null)
+            startForeground(NOTIFICATION_ID, notification)
+            isForegroundServiceStarted = true
+            Log.d(TAG, "onCreate: Started foreground service immediately")
+        } catch (e: Exception) {
+            Log.e(TAG, "onCreate: Failed to start foreground service", e)
+        }
+
         initializePlayer()
-        ensureForegroundNotification()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -93,14 +107,22 @@ class MusicService : MediaSessionService() {
     }
 
     fun setQueue(tracks: List<Track>, startIndex: Int = 0) {
-        currentQueue = tracks
-        currentIndex = startIndex
-        val mediaItems = tracks.map { track ->
-            MediaItem.fromUri(track.path)
+        serviceScope.launch(Dispatchers.Default) {
+            try {
+                val mediaItems = tracks.map { track ->
+                    MediaItem.fromUri(track.path)
+                }
+                withContext(Dispatchers.Main) {
+                    currentQueue = tracks
+                    currentIndex = startIndex
+                    exoPlayer?.setMediaItems(mediaItems)
+                    exoPlayer?.prepare()
+                    playTrack(startIndex)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
-        exoPlayer?.setMediaItems(mediaItems)
-        exoPlayer?.prepare()
-        playTrack(startIndex)
     }
 
     fun playTrack(index: Int) {
@@ -220,7 +242,7 @@ class MusicService : MediaSessionService() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(content)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(android.R.drawable.ic_media_play)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
@@ -229,11 +251,11 @@ class MusicService : MediaSessionService() {
 
     private fun ensureForegroundNotification(track: Track? = getCurrentTrack()) {
         val notification = buildNotification(track)
-        if (!isForegroundServiceStarted) {
+        try {
             startForeground(NOTIFICATION_ID, notification)
             isForegroundServiceStarted = true
-        } else {
-            notificationManager.notify(NOTIFICATION_ID, notification)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -245,11 +267,17 @@ class MusicService : MediaSessionService() {
         exoPlayer?.release()
         exoPlayer = null
         mediaSession = null
+        try {
+            serviceScope.cancel()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     companion object {
         const val CHANNEL_ID = "music_player_channel"
         private const val NOTIFICATION_ID = 1001
+        private const val TAG = "MusicService"
     }
 }
 

@@ -53,7 +53,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun LibraryScreen(
     onNavigateToPlaylist: (Long) -> Unit,
-    viewModel: LibraryViewModel = hiltViewModel()
+    viewModel: LibraryViewModel = hiltViewModel(),
+    playerViewModel: com.muzify.app.ui.viewmodel.PlayerViewModel
 ) {
     val allTracks by viewModel.allTracks.collectAsState()
     val likedTracks by viewModel.likedTracks.collectAsState()
@@ -135,7 +136,10 @@ fun LibraryScreen(
                     title = stringResource(R.string.downloaded_songs),
                     tracks = allTracks,
                     viewMode = viewMode,
-                    emptyMessage = stringResource(R.string.no_songs_found)
+                    emptyMessage = stringResource(R.string.no_songs_found),
+                    onTrackClick = { track ->
+                        playerViewModel.playQueue(allTracks, allTracks.indexOf(track))
+                    }
                 )
             }
 
@@ -144,7 +148,10 @@ fun LibraryScreen(
                     title = stringResource(R.string.liked_songs),
                     tracks = likedTracks,
                     viewMode = viewMode,
-                    emptyMessage = stringResource(R.string.no_liked_songs)
+                    emptyMessage = stringResource(R.string.no_liked_songs),
+                    onTrackClick = { track ->
+                        playerViewModel.playQueue(likedTracks, likedTracks.indexOf(track))
+                    }
                 )
             }
 
@@ -275,7 +282,8 @@ private fun TrackSection(
     title: String,
     tracks: List<Track>,
     viewMode: LibraryViewModel.ViewMode,
-    emptyMessage: String
+    emptyMessage: String,
+    onTrackClick: (Track) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
@@ -290,7 +298,7 @@ private fun TrackSection(
                     items(tracks) { track ->
                         TrackItem(
                             track = track,
-                            onClick = { /* Hook up to player */ }
+                            onClick = { onTrackClick(track) }
                         )
                     }
                 }
@@ -299,7 +307,7 @@ private fun TrackSection(
                     tracks.forEach { track ->
                         TrackItem(
                             track = track,
-                            onClick = { /* Hook up to player */ },
+                            onClick = { onTrackClick(track) },
                             isListMode = true
                         )
                     }

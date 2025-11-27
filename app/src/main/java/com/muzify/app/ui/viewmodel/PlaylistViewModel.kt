@@ -28,6 +28,9 @@ class PlaylistViewModel @Inject constructor(
     private val _allPlaylists = MutableStateFlow<List<Playlist>>(emptyList())
     val allPlaylists: StateFlow<List<Playlist>> = _allPlaylists.asStateFlow()
 
+    private val _allTracks = MutableStateFlow<List<Track>>(emptyList())
+    val allTracks: StateFlow<List<Track>> = _allTracks.asStateFlow()
+
     fun loadPlaylist(playlistId: Long) {
         viewModelScope.launch {
             _playlist.value = playlistRepository.getPlaylistById(playlistId)
@@ -41,6 +44,14 @@ class PlaylistViewModel @Inject constructor(
         viewModelScope.launch {
             playlistRepository.getAllPlaylists().collect { playlists ->
                 _allPlaylists.value = playlists
+            }
+        }
+    }
+
+    fun loadAllTracks() {
+        viewModelScope.launch {
+            trackRepository.getAllTracks().collect { tracks ->
+                _allTracks.value = tracks
             }
         }
     }

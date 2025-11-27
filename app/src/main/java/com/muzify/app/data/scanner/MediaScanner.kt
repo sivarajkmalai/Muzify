@@ -47,14 +47,12 @@ class MediaScanner @Inject constructor(
             if (isAudioFile(file)) {
                 createTrackFromDocument(file)?.let {
                     collector.add(it)
-                    Log.v(TAG, "Added track: ${it.title}")
                 }
             }
             return
         }
         
         val files = file.listFiles()
-        Log.d(TAG, "traverseFolder: Scanning directory: ${file.name}, found ${files.size} files")
         
         files.forEach { child ->
             traverseFolder(child, collector)

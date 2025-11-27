@@ -118,7 +118,7 @@ fun PlaylistScreen(
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    IconButton(onClick = { /* TODO: Implement Add Song feature */ }) {
+                    IconButton(onClick = { showAddSongSheet = true }) {
                         Icon(Icons.Default.Add, contentDescription = "Add Song")
                     }
                     FloatingActionButton(
@@ -159,6 +159,59 @@ fun PlaylistScreen(
                             }
                         ) {
                             Icon(Icons.Default.Delete, contentDescription = "Remove")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showAddSongSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showAddSongSheet = false }
+        ) {
+            val allTracks by viewModel.allTracks.collectAsState()
+            
+            LaunchedEffect(Unit) {
+                viewModel.loadAllTracks()
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Add Songs",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(allTracks) { track ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.addTrackToPlaylist(playlistId, track.id)
+                                    showAddSongSheet = false
+                                }
+                                .padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AsyncImage(
+                                model = track.coverArtPath,
+                                contentDescription = null,
+                                modifier = Modifier.size(40.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column {
+                                Text(text = track.title, style = MaterialTheme.typography.bodyLarge)
+                                Text(text = track.artist, style = MaterialTheme.typography.bodySmall)
+                            }
                         }
                     }
                 }

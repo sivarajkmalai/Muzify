@@ -172,14 +172,17 @@ fun FullPlayerScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // 10s Backward
                         IconButton(onClick = { viewModel.skipBackward() }) {
                             Icon(
                                 Icons.Default.Replay10,
                                 contentDescription = "Skip Backward",
-                                tint = androidx.compose.ui.graphics.Color.White
+                                tint = androidx.compose.ui.graphics.Color.White,
+                                modifier = Modifier.size(32.dp)
                             )
                         }
 
+                        // Previous
                         IconButton(onClick = { viewModel.playPrevious() }) {
                             Icon(
                                 Icons.Default.SkipPrevious,
@@ -189,17 +192,21 @@ fun FullPlayerScreen(
                             )
                         }
 
+                        // Play/Pause
                         FloatingActionButton(
                             onClick = { viewModel.playPause() },
-                            modifier = Modifier.size(64.dp)
+                            modifier = Modifier.size(72.dp),
+                            containerColor = androidx.compose.ui.graphics.Color.White,
+                            contentColor = androidx.compose.ui.graphics.Color.Black
                         ) {
                             Icon(
                                 if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                 contentDescription = if (isPlaying) "Pause" else "Play",
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(40.dp)
                             )
                         }
 
+                        // Next
                         IconButton(onClick = { viewModel.playNext() }) {
                             Icon(
                                 Icons.Default.SkipNext,
@@ -209,11 +216,13 @@ fun FullPlayerScreen(
                             )
                         }
 
+                        // 10s Forward
                         IconButton(onClick = { viewModel.skipForward() }) {
                             Icon(
                                 Icons.Default.Forward10,
                                 contentDescription = "Skip Forward",
-                                tint = androidx.compose.ui.graphics.Color.White
+                                tint = androidx.compose.ui.graphics.Color.White,
+                                modifier = Modifier.size(32.dp)
                             )
                         }
                     }
@@ -221,8 +230,9 @@ fun FullPlayerScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                            .padding(top = 24.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
                             onClick = {
@@ -244,7 +254,7 @@ fun FullPlayerScreen(
                                 tint = if (loopMode == MusicService.LoopMode.NONE)
                                     androidx.compose.ui.graphics.Color.White.copy(alpha = 0.5f)
                                 else
-                                    androidx.compose.ui.graphics.Color.White
+                                    androidx.compose.ui.graphics.Color.Green
                             )
                         }
 
@@ -253,9 +263,18 @@ fun FullPlayerScreen(
                                 if (currentTrack?.liked == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = "Like",
                                 tint = if (currentTrack?.liked == true)
-                                    androidx.compose.ui.graphics.Color.Red
+                                    androidx.compose.ui.graphics.Color.Green
                                 else
-                                    androidx.compose.ui.graphics.Color.White
+                                    androidx.compose.ui.graphics.Color.White,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                        
+                        IconButton(onClick = { showAddToPlaylistSheet = true }) {
+                            Icon(
+                                Icons.Default.PlaylistAdd,
+                                contentDescription = "Add to Playlist",
+                                tint = androidx.compose.ui.graphics.Color.White
                             )
                         }
                     }

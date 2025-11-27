@@ -74,7 +74,8 @@ fun MuzifyNavigation(
                     LibraryScreen(
                         onNavigateToPlaylist = { playlistId ->
                             navController.navigate("playlist/$playlistId")
-                        }
+                        },
+                        playerViewModel = playerViewModel
                     )
                 }
                 composable("playlist/{playlistId}") { backStackEntry ->
